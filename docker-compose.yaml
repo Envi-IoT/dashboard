@@ -1,0 +1,80 @@
+version: '2'
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    restart: always
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=db0
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+      - INFLUXDB_ADMIN_ENABLED=true
+  telegraf:
+    image: telegraf:1.11-alpine
+    container_name: "telegraf"
+    environment:
+      HOSTNAME: "telegraf-getting-started"
+    links:
+      - influxdb
+    volumes:
+      - ./telegraph:/etc/telegraf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - mosquitto
+      - influxdb
+
+  kapacitor:
+    image: kapacitor:latest
+    container_name: "kapacitor"
+    volumes:
+      - ./kapacitor/data/:/var/lib/kapacitor
+      - ./kapacitor/config/:/etc/kapacitor/
+    links:
+      - influxdb
+    ports:
+      - '9092:9092'
+  chronograf:
+    image: chronograf:latest
+    ports:
+      - '127.0.0.1:8888:8888'
+    volumes:
+      - chronograf-storage:/var/lib/chronograf
+    links:
+      - influxdb
+      - kapacitor
+    depends_on:
+      - influxdb
+      - kapacitor
+      - telegraf
+    environment:
+      - INFLUXDB_DB=db11
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_USERNAME=${INFLUXDB_USERNAME}
+      - INFLUXDB_PASSWORD=${INFLUXDB_PASSWORD}
+      - INFLUXDB_ADMIN_ENABLED=true
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana-provisioning/:/etc/grafana/provisioning
+    depends_on:
+      - influxdb
+    links:
+      - influxdb
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+volumes:
+  influxdb-storage:
+  chronograf-storage:
+  grafana-storage:
