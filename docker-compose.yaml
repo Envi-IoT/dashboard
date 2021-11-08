@@ -1,11 +1,17 @@
 version: '2'
 services:
   mosquitto:
-    image: eclipse-mosquitto:latest
+    container_name: mqtt
+    image: eclipse-mosquitto:1.6.15
     restart: always
+    expose:
+      - "1883"
+      - "9001"
     ports:
       - "1883:1883"
       - "9001:9001"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
   influxdb:
     image: influxdb:1.8
     ports:
@@ -17,30 +23,6 @@ services:
       - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
       - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
       - INFLUXDB_ADMIN_ENABLED=true
-  telegraf:
-    image: telegraf:1.11-alpine
-    container_name: "telegraf"
-    environment:
-      HOSTNAME: "telegraf-getting-started"
-    links:
-      - influxdb
-    volumes:
-      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - mosquitto
-      - influxdb
-
-  kapacitor:
-    image: kapacitor:latest
-    container_name: "kapacitor"
-    volumes:
-      - ./kapacitor/data/:/var/lib/kapacitor
-      - ./kapacitor/config/:/etc/kapacitor/
-    links:
-      - influxdb
-    ports:
-      - '9092:9092'
   chronograf:
     image: chronograf:latest
     ports:
@@ -74,6 +56,18 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+  subscriber:
+    build: ./subscriber-service
+    ports: 
+      - '4080:4080'
+    depends_on:
+      - influxdb
+      - mosquitto
+    external_links:
+      - mosquitto
+    links:
+    - influxdb
+    - mosquitto
 volumes:
   influxdb-storage:
   chronograf-storage:
