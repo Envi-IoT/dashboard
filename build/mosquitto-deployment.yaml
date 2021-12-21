@@ -25,7 +25,8 @@ spec:
         io.kompose.service: mosquitto
     spec:
       containers:
-      - image: eclipse-mosquitto:1.6.15
+      - name: mosquitto
+        image: eclipse-mosquitto:1.6.15
         imagePullPolicy: ""
         ports:
         - containerPort: 1883
