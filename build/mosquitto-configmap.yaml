@@ -5,6 +5,6 @@ metadata:
     app: chirpstack-mosquitto  
 data:
   mosquitto.conf: |    
-  port 1883
-  listener 1883
-  allow_anonymous true  
+    port 1883
+    listener 1883
+    allow_anonymous true  
