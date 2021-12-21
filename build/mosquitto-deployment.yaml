@@ -38,6 +38,7 @@ spec:
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
+      - name: mosquitto-claim0
         persistentVolumeClaim:
           claimName: mosquitto-claim0
 status: {}
