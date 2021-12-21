@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
@@ -34,6 +35,9 @@ func PushToDb(msg string, w api.WriteAPI) {
 		},
 		time.Now())
 	w.WritePoint(p)
+	if w.Errors() != nil {
+		fmt.Printf("Write error: %s\n", <-w.Errors())
+	}
 }
 
 //CloseInfluxClient close client
