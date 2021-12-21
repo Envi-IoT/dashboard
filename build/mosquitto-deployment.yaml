@@ -27,7 +27,6 @@ spec:
       containers:
       - image: eclipse-mosquitto:1.6.15
         imagePullPolicy: ""
-        name: mqtt1
         ports:
         - containerPort: 1883
         - containerPort: 9001
