@@ -9,11 +9,10 @@ metadata:
     io.kompose.service: influxdb
   name: influxdb
 spec:
+  type: LoadBalancer
   ports:
   - name: "8086"
     port: 8086
     targetPort: 8086
   selector:
     io.kompose.service: influxdb
-status:
-  loadBalancer: {}
