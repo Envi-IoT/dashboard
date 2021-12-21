@@ -24,6 +24,9 @@ spec:
       labels:
         io.kompose.service: grafana
     spec:
+      securityContext:
+          runAsUser: 472
+          fsGroup: 472
       containers:
       - env:
         - name: GF_SECURITY_ADMIN_PASSWORD
