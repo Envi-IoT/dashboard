@@ -32,10 +32,10 @@ spec:
         - containerPort: 1883
         - containerPort: 9001
         resources: {}
-      volumeMounts:
-        - name: config-file
-          mountPath: /.config/mosquitto/mosquitto.conf
-          subPath: mosquitto.conf 
+        volumeMounts:
+          - name: config-file
+            mountPath: /.config/mosquitto/mosquitto.conf
+            subPath: mosquitto.conf 
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
