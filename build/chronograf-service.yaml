@@ -9,11 +9,10 @@ metadata:
     io.kompose.service: chronograf
   name: chronograf
 spec:
+  type: LoadBalancer
   ports:
   - name: "8888"
     port: 8888
     targetPort: 8888
   selector:
     io.kompose.service: chronograf
-status:
-  loadBalancer: {}
