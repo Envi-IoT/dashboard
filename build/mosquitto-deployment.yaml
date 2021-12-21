@@ -32,7 +32,7 @@ spec:
         - containerPort: 1883
         - containerPort: 9001
         resources: {}
-       volumeMounts:
+      volumeMounts:
         - name: config-file
           mountPath: /.config/mosquitto/mosquitto.conf
           subPath: mosquitto.conf 
