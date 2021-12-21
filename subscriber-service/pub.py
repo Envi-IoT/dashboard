@@ -2,7 +2,7 @@ import paho.mqtt.client as paho
 import json
 import time
 import random
-broker="localhost"
+broker="35.232.72.144"
 port=1883
 def on_publish(client,userdata,result):
     print("data published \n")

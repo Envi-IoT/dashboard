@@ -9,6 +9,7 @@ metadata:
     io.kompose.service: mosquitto
   name: mosquitto
 spec:
+  type: LoadBalancer
   ports:
   - name: "1883"
     port: 1883
@@ -18,5 +19,4 @@ spec:
     targetPort: 9001
   selector:
     io.kompose.service: mosquitto
-status:
-  loadBalancer: {}
+
