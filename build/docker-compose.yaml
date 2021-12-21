@@ -1,7 +1,7 @@
 version: '2'
 services:
   mosquitto:
-    container_name: mqtt
+    container_name: mqtt1
     image: eclipse-mosquitto:1.6.15
     restart: always
     expose:
@@ -57,7 +57,7 @@ services:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
   subscriber:
-    build: ./subscriber-service
+    image: sammyoina/binssubs:0.0.1
     ports: 
       - '4080:4080'
     depends_on:
@@ -69,7 +69,7 @@ services:
     - influxdb
     - mosquitto
   web-service:
-    build: ./web-service
+    image: sammyoina/binsweb:0.0.1
     ports:
       - '8789:8789'
     depends_on:

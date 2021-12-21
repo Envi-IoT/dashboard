@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\samlo\kompose\kompose.exe convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: subscriber
+  name: subscriber
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: subscriber
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\samlo\kompose\kompose.exe convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: subscriber
+    spec:
+      containers:
+      - image: sammyoina/binssubs:0.0.1
+        imagePullPolicy: ""
+        name: subscriber
+        ports:
+        - containerPort: 4080
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}

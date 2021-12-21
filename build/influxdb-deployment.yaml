@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\samlo\kompose\kompose.exe convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: influxdb
+  name: influxdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: influxdb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\samlo\kompose\kompose.exe convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: influxdb
+    spec:
+      containers:
+      - env:
+        - name: INFLUXDB_ADMIN_ENABLED
+          value: "true"
+        - name: INFLUXDB_ADMIN_PASSWORD
+          value: admin
+        - name: INFLUXDB_ADMIN_USER
+          value: admin
+        - name: INFLUXDB_DB
+          value: db0
+        image: influxdb:1.8
+        imagePullPolicy: ""
+        name: influxdb
+        ports:
+        - containerPort: 8086
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/influxdb
+          name: influxdb-storage
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: influxdb-storage
+        persistentVolumeClaim:
+          claimName: influxdb-storage
+status: {}
