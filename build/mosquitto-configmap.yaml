@@ -1,7 +1,6 @@
 kind: ConfigMap
 metadata:
   name: mosquitto-config
-  namespace: ****
   labels:
     app: chirpstack-mosquitto  
 data:
