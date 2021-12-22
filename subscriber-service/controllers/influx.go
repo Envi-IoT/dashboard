@@ -7,6 +7,7 @@ import (
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api"
+	"github.com/influxdata/influxdb-client-go/v2/api/write"
 
 	models "subs/models"
 )
@@ -19,21 +20,41 @@ func InitializeInfluxDb() (api.WriteAPI, influxdb2.Client) {
 	return writeAPI, clientInflux
 }
 
-//PushToDb influxdb
-func PushToDb(msg string, w api.WriteAPI) {
+//create TCAN data point
+func CreateTCANPoint(msg string) *write.Point {
 	sensorData := models.HumidityTemp{}
 	json.Unmarshal([]byte(msg), &sensorData)
 	p := influxdb2.NewPoint(
-		"humidityTemps",
+		"Tcan",
 		map[string]string{"Unit": "celcius"},
 		map[string]interface{}{
-			"messageID":   sensorData.MessageID,
-			"sensorID":    sensorData.SensorID,
+			"device":      sensorData.Device,
+			"Level":       sensorData.Level,
 			"temperature": sensorData.Temperature,
 			"humidity":    sensorData.Humidity,
-			"timestamp":   sensorData.Timestamp,
 		},
 		time.Now())
+	return p
+}
+
+//create health data point
+func CreateHealthPoint(msg string) *write.Point {
+	data := models.Health{}
+	json.Unmarshal([]byte(msg), &data)
+	p := influxdb2.NewPoint(
+		"Health",
+		map[string]string{"Unit": "volts"},
+		map[string]interface{}{
+			"device":    data.Device,
+			"battery":   data.Battery,
+			"bootCount": data.BootCount,
+		},
+		time.Now())
+	return p
+}
+
+//PushToDb influxdb
+func PushToDb(p *write.Point, w api.WriteAPI) {
 	w.WritePoint(p)
 	if w.Errors() != nil {
 		fmt.Printf("Write error: %s\n", <-w.Errors())

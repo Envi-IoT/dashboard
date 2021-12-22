@@ -20,13 +20,15 @@ var influxClient influxdb2.Client
 var knt int
 var f MQTT.MessageHandler = func(client MQTT.Client, msg MQTT.Message) {
 	fmt.Printf("sensors: %s\n", msg.Payload())
-	controllers.PushToDb(string(msg.Payload()), writeAPI)
+	dataPoint := controllers.CreateTCANPoint(string(msg.Payload()))
+	controllers.PushToDb(dataPoint, writeAPI)
 	knt++
 }
 var knt2 int
 var f2 MQTT.MessageHandler = func(client MQTT.Client, msg MQTT.Message) {
 	fmt.Printf("health: %s\n", msg.Payload())
-	controllers.PushToDb(string(msg.Payload()), writeAPI)
+	dataPoint := controllers.CreateHealthPoint(string(msg.Payload()))
+	controllers.PushToDb(dataPoint, writeAPI)
 	knt2++
 }
 
